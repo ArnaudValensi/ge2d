@@ -1,13 +1,13 @@
 package ge2d
 
 import (
-"fmt"
-"github.com/0xe2-0x9a-0x9b/Go-SDL/sdl"
-"log"
-//"math"
-"os"
-"strings"
-"time"
+	"fmt"
+	"github.com/0xe2-0x9a-0x9b/Go-SDL/sdl"
+	"log"
+	//"math"
+	"os"
+	"strings"
+	"time"
 )
 
 var resourcePath string
