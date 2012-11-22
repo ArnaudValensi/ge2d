@@ -4,7 +4,6 @@ import (
 	"container/list"
 )
 
-
 type Object struct {
 	id uint
 	componentList *list.List

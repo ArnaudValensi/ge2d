@@ -3,20 +3,24 @@ package ge2d
 import "fmt"
 
 type SceneManager struct {
-	objectMap map[uint]*Object
+	rootNode	INode
+	nodeMap		map[uint]INode
 }
 
 func NewSceneManager() *SceneManager {
-	return &SceneManager {make(map[uint]*Object)}
+	rootNode := NewBaseNode("root", nil, Vector2d {0, 0})
+	nodeMap := make(map[uint]INode)
+	nodeMap[rootNode.GetId()] = rootNode
+	return &SceneManager {rootNode, nodeMap}
 }
 
-func (this *SceneManager) AddObject(object *Object) {
-	this.objectMap[object.GetId()] = object
+func (this *SceneManager) AddNode(node INode) {
+	this.nodeMap[node.GetId()] = node
 }
 
 func (this *SceneManager) HandleMessage(message IMessage) {
 	fmt.Print("[SceneManager] handleMessage: ", message)
 	fmt.Print("[SceneManager] destination object: ", message.GetDestinationObjectId())
 
-	this.objectMap[message.GetDestinationObjectId()].HandleMessage(message)
+	this.nodeMap[message.GetDestinationObjectId()].HandleMessage(message)
 }

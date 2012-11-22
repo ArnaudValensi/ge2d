@@ -1,5 +1,9 @@
 package ge2d
 
+import (
+	"container/list"
+)
+
 type INode interface {
 	GetParentNode() INode
 	SetName(name string)
@@ -10,11 +14,13 @@ type INode interface {
 	addChild(child INode)
 	RemoveNamedChild(name string)
 	RemoveChild(child INode)
-	AttachObject(object *Object)
-	DetachObject(object *Object)
-	DetachObjectById(id uint)
+	// AttachObject(object *Object)
+	// DetachObject(object *Object)
+	// DetachObjectById(id uint)
 	SetPosition(position Vector2d)
 	GetPosition() Vector2d
+	AddComponent(component *BaseComponent)
+	HandleMessage(message IMessage)
 }
 
 type BaseNode struct {
@@ -23,7 +29,8 @@ type BaseNode struct {
 	parent INode
 	position Vector2d
 	nodeMap map[uint]INode
-	objectMap map[uint]*Object
+	componentList *list.List
+	// objectMap map[uint]*Object
 }
 
 var lastNodeId uint = 0
@@ -37,7 +44,8 @@ func NewBaseNode(name string, parent INode, position Vector2d) *BaseNode {
 		nil, 
 		position, 
 		make(map[uint]INode), 
-		make(map[uint]*Object)}
+		list.New()}
+		// make(map[uint]*Object)}
 }
 
 func (this *BaseNode) GetParentNode() INode {
@@ -85,21 +93,21 @@ func (this *BaseNode) RemoveChild(child INode) {
 	}
 }
 
-func (this *BaseNode) AttachObject(object *Object) {
-	this.objectMap[object.GetId()] = object
-}
+// func (this *BaseNode) AttachObject(object *Object) {
+// 	this.objectMap[object.GetId()] = object
+// }
 
-func (this *BaseNode) DetachObject(object *Object) {
-	for key, value := range this.objectMap {
-		if value == object {
-			delete(this.objectMap, key)
-		}
-	}
-}
+// func (this *BaseNode) DetachObject(object *Object) {
+// 	for key, value := range this.objectMap {
+// 		if value == object {
+// 			delete(this.objectMap, key)
+// 		}
+// 	}
+// }
 
-func (this *BaseNode) DetachObjectById(id uint) {
-	delete(this.objectMap, id)
-}
+// func (this *BaseNode) DetachObjectById(id uint) {
+// 	delete(this.objectMap, id)
+// }
 
 func (this *BaseNode) SetPosition(position Vector2d) {
 	this.position = position
@@ -107,4 +115,14 @@ func (this *BaseNode) SetPosition(position Vector2d) {
 
 func (this *BaseNode) GetPosition() Vector2d {
 	return this.position
+}
+
+func (this *BaseNode) AddComponent(component *BaseComponent) {
+	this.componentList.PushBack(component)
+}
+
+func (this *BaseNode) HandleMessage(message IMessage) {
+	for e := this.componentList.Front(); e != nil; e = e.Next() {
+		e.Value.(IComponent).HandleMessage(message)
+	}
 }
