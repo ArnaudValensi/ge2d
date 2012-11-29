@@ -5,34 +5,34 @@ import (
 	"github.com/0xe2-0x9a-0x9b/Go-SDL/sdl"
 	"log"
 	//"math"
-	"os"
-	"strings"
+	// "os"
+	// "strings"
 	"time"
 )
 
 var resourcePath string
 
 func Run() {
-	{
-		GOPATH := os.Getenv("GOPATH")
-		if GOPATH == "" {
-			log.Fatal("No such environment variable: GOPATH")
-		}
-		for _, gopath := range strings.Split(GOPATH, ":") {
-			a := gopath + "/src/binpix/gosdl_test"
-			_, err := os.Stat(a)
-			if err == nil {
-				resourcePath = a
-				break
-			}
-		}
-		if resourcePath == "" {
-			log.Fatal("Failed to find resource directory")
-		}
-	}
+	// {
+	// 	GOPATH := os.Getenv("GOPATH")
+	// 	if GOPATH == "" {
+	// 		log.Fatal("No such environment variable: GOPATH")
+	// 	}
+	// 	for _, gopath := range strings.Split(GOPATH, ":") {
+	// 		a := gopath + "/src/binpix/gosdl_test"
+	// 		_, err := os.Stat(a)
+	// 		if err == nil {
+	// 			resourcePath = a
+	// 			break
+	// 		}
+	// 	}
+	// 	if resourcePath == "" {
+	// 		log.Fatal("Failed to find resource directory")
+	// 	}
+	// }
 
-	renderManager := NewRenderManager()
-	renderManager.Init()
+	// renderManager := NewRenderManager()
+	// renderManager.Init()
 	// var i int16 = 0
 	// image := sdl.Load(resourcePath + "/test.png")
 
@@ -41,6 +41,30 @@ func Run() {
 	// }
 
 	// sdl.WM_SetIcon(image, nil)
+
+	/////////////////////////////////////////////
+
+	// Init managers
+	renderManager := NewRenderManager()
+	sceneManager := NewSceneManager()
+
+	// Create an object
+	obj1 := NewObject(1)
+	// Create a render component
+	spr := renderManager.CreateRenderComponent("walk_face2")
+	// Add it to the object
+	obj1.AddComponent(spr)
+	
+	// Add object to the scene
+	rootNode := sceneManager.GetRootNode()
+	rootNode.AttachObject(obj1)
+
+	// scene.AddObject(obj1)
+
+	msg := NewSetPositionMessage(1, Vector2d {23, 69})
+	sceneManager.HandleMessage(msg)
+	
+	/////////////////////////////////////////////
 
 	running := true
 
@@ -60,7 +84,7 @@ func Run() {
 			// // worm_in <- p
 
 			// screen.Flip()
-			renderManager.Update()
+			renderManager.Update(sceneManager)
 		case _event := <-sdl.Events:
 			switch e := _event.(type) {
 			case sdl.QuitEvent:

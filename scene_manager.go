@@ -1,22 +1,43 @@
 package ge2d
 
-import "fmt"
+import (
+	"fmt"
+	"log"
+)
 
 type SceneManager struct {
-	objectMap map[uint]*Object
+	objectMap	map[uint]*Object
+	rootNode	INode
 }
 
 func NewSceneManager() *SceneManager {
-	return &SceneManager {make(map[uint]*Object)}
+	this := &SceneManager {make(map[uint]*Object), nil}
+	this.rootNode = NewBaseNode("root", nil, this, Vector2d {0, 0})
+	return this
 }
 
+// Used by node classes to register an object to message system
 func (this *SceneManager) AddObject(object *Object) {
+	if _, exist := this.objectMap[object.GetId()]; exist {
+		log.Printf(
+			"[Warning] [SceneManager] AddObject(): object(id: %d) %s",
+			object.GetId(),
+			"already attached\n")
+	}
 	this.objectMap[object.GetId()] = object
 }
 
-func (this *SceneManager) HandleMessage(message IMessage) {
-	fmt.Print("[SceneManager] handleMessage: ", message)
-	fmt.Print("[SceneManager] destination object: ", message.GetDestinationObjectId())
+func (this *SceneManager) GetRootNode() INode {
+	return this.rootNode
+}
 
-	this.objectMap[message.GetDestinationObjectId()].HandleMessage(message)
+func (this *SceneManager) HandleMessage(message IMessage) {
+	fmt.Println("[SceneManager] handleMessage: ", message)
+	fmt.Println("[SceneManager] destination object: ", message.GetDestinationObjectId())
+
+	if object, exist := this.objectMap[message.GetDestinationObjectId()]; exist {
+		object.HandleMessage(message)
+		return
+	}
+	log.Fatal("[SceneManager] HandleMessage(): Unknown destination object id")
 }

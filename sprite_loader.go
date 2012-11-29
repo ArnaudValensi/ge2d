@@ -63,6 +63,9 @@ func (this *SpriteLoader) Load(gsprFile string) {
 			if this.animMap[anim.Name].Sprite[i] == nil {
 				log.Fatal("[SpriteLoader] ", sdl.GetError())
 			}
+			log.Printf(
+				"[SpriteLoader] Sprite: %s, Path: %s -> Loaded\n", 
+				anim.Name, image.Path)
 		}
 	}	
 	// fmt.Println(this.animMap)

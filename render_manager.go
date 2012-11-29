@@ -11,12 +11,15 @@ import (
 )
 
 type RenderManager struct {
-	screen *sdl.Surface
-	image *sdl.Surface
+	screen		*sdl.Surface
+	image		*sdl.Surface
+	animMap		map[string]*Anim
 }
 
 func NewRenderManager() *RenderManager {
-	return &RenderManager {nil, nil}
+	this := &RenderManager {nil, nil, make(map[string]*Anim)}
+	this.Init()
+	return this
 }
 
 func (this *RenderManager) Init() {
@@ -54,30 +57,85 @@ func (this *RenderManager) Init() {
 		log.Fatal("GetKeyName broken")
 	}
 
+	spriteLoader := NewSpriteLoader()
+	spriteLoader.Load("test.gspr")
+	this.animMap = spriteLoader.GetAnimMap()
+
 	// DEBUG
-	this.DebugRessources()
+	// this.DebugRessources()
 }
 
-
+// TODO: Sprite are not free (sdl)
 func (this *RenderManager) Quit() {
 	// image.Free()
 	sdl.Quit()
 }
 
 var i int16 = 0
-func (this *RenderManager) Update() {
+func (this *RenderManager) Update(sceneManager *SceneManager) {
 	this.screen.FillRect(nil, 0x302019)
-	this.screen.Blit(&sdl.Rect{i, 0, 0, 0}, this.image, nil)
-	i++
+	this.BrowseNode(sceneManager.GetRootNode())
 	this.screen.Flip()
+
+	// this.screen.FillRect(nil, 0x302019)
+	// this.screen.Blit(&sdl.Rect{i, 0, 0, 0}, this.image, nil)
+	// i++
+	// this.screen.Flip()
 }
 
-func (this *RenderManager) DebugRessources() {
-	this.image = sdl.Load(resourcePath + "/test.png")
+// func (this *RenderManager) DebugRessources() {
+// 	this.image = sdl.Load(resourcePath + "/test.png")
 
-	if this.image == nil {
-		log.Fatal(sdl.GetError())
+// 	if this.image == nil {
+// 		log.Fatal(sdl.GetError())
+// 	}
+
+// 	// sdl.WM_SetIcon(image, nil)
+// }
+
+func (this *RenderManager) CreateRenderComponent(sprite string) *RenderComponent {
+	if _, exist := this.animMap[sprite]; !exist {
+		log.Fatal("[RenderManager] CreateRenderComponent(): Unknown sprite")
 	}
+	renderComponent := NewRenderComponent(this, sprite)
+	return renderComponent
+}
 
-	// sdl.WM_SetIcon(image, nil)
+func (this *RenderManager) BrowseNode(node INode) {
+	objectMap := node.GetObjectMap()
+	for _, object := range objectMap {
+		renderComponent := 
+			object.GetComposantByTypeName("render").(*RenderComponent)
+		if renderComponent != nil {
+			this.Blit(renderComponent, node)
+			// this.Blit(renderComponent.GetNextImage(), node.GetPosition())
+		}
+	}
+	for _, node := range node.GetChildMap() {
+		this.BrowseNode(node)
+	}
+}
+
+func (this *RenderManager) Blit(component *RenderComponent, node INode) {
+	anim := this.animMap[component.GetAnimation()]
+	imageCount := component.GetImageCount()
+
+	log.Printf("imageCount: %d, image: %d\n", *imageCount, *imageCount / anim.Frequency)
+
+	image := anim.Sprite[*imageCount / anim.Frequency]
+	nbImage := uint(len(anim.Sprite))
+	*imageCount = (*imageCount + 1) % (nbImage * anim.Frequency)
+
+	position := node.GetPosition()
+
+	if image == nil {
+		log.Fatal("[RenderManager] Blit(): nil surface")
+	}
+	
+	this.screen.Blit(
+		&sdl.Rect{
+		int16(position.X), int16(position.Y), 
+		uint16(image.W), uint16(image.H)},
+		image, nil)
+
 }
