@@ -41,3 +41,8 @@ func (this *SceneManager) HandleMessage(message IMessage) {
 	}
 	log.Fatal("[SceneManager] HandleMessage(): Unknown destination object id")
 }
+
+// Load tile map in tmx format. You can use http://www.mapeditor.org/ 
+func (this *SceneManager) LoadTileMap(file string) {
+	
+}
