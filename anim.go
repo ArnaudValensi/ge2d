@@ -6,9 +6,9 @@ import (
 
 // TODO: private attributes
 type Anim struct {
-	Name		string
-	Frequency	uint
-	Sprite		[]*sdl.Surface
+	name		string
+	frequency	uint
+	sprite		[]*sdl.Surface
 	// nbCall		uint
 }
 
@@ -17,10 +17,29 @@ func NewAnim(name string, frequency uint, nbSprites int) *Anim {
 }
 
 func (this *Anim) Free() {
-	for _, image := range this.Sprite {
+	for _, image := range this.sprite {
 		image.Free()
 	}
+}
 
+func (this *Anim) GetName() string {
+	return this.name
+}
+
+func (this *Anim) GetFrequency() uint {
+	return this.frequency
+}
+
+func (this *Anim) GetSprite(n uint) *sdl.Surface {
+	return this.sprite[n]
+}
+
+func (this *Anim) GetNunberSprite() uint {
+	return uint(len(this.sprite))
+}
+
+func (this *Anim) AddSprite(file string, i int) {
+	this.sprite[i] = sdl.Load(file)
 }
 
 // func (this *Anim) GetNextImage() *sdl.Surface {

@@ -1,19 +1,20 @@
 package ge2d
 
 import (
-//"fmt"
-"github.com/0xe2-0x9a-0x9b/Go-SDL/sdl"
-"log"
-//"math"
-//"os"
-//"strings"
-//"time"
+	//"fmt"
+	"github.com/0xe2-0x9a-0x9b/Go-SDL/sdl"
+	"log"
+	//"math"
+	//"os"
+	//"strings"
+	//"time"
 )
 
 type RenderManager struct {
 	screen		*sdl.Surface
 	image		*sdl.Surface
 	animMap		map[string]*Anim
+	// spriteSlice	[]*sdl.Surface
 }
 
 func NewRenderManager() *RenderManager {
@@ -120,11 +121,11 @@ func (this *RenderManager) Blit(component *RenderComponent, node INode) {
 	anim := this.animMap[component.GetAnimation()]
 	imageCount := component.GetImageCount()
 
-	log.Printf("imageCount: %d, image: %d\n", *imageCount, *imageCount / anim.Frequency)
+	log.Printf("imageCount: %d, image: %d\n", *imageCount, *imageCount / anim.GetFrequency())
 
-	image := anim.Sprite[*imageCount / anim.Frequency]
-	nbImage := uint(len(anim.Sprite))
-	*imageCount = (*imageCount + 1) % (nbImage * anim.Frequency)
+	image := anim.GetSprite(*imageCount / anim.GetFrequency())
+	nbImage := anim.GetNunberSprite()
+	*imageCount = (*imageCount + 1) % (nbImage * anim.GetFrequency())
 
 	position := node.GetPosition()
 
@@ -138,4 +139,8 @@ func (this *RenderManager) Blit(component *RenderComponent, node INode) {
 		uint16(image.W), uint16(image.H)},
 		image, nil)
 
+}
+
+func (this *RenderManager) LoadSprite() {
+	
 }

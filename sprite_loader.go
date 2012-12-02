@@ -59,8 +59,8 @@ func (this *SpriteLoader) Load(gsprFile string) {
 		this.animMap[anim.Name] = 
 			NewAnim(anim.Name, anim.Frequency, len(anim.Images))
 		for i, image := range anim.Images {
-			this.animMap[anim.Name].Sprite[i] = sdl.Load(image.Path)
-			if this.animMap[anim.Name].Sprite[i] == nil {
+			this.animMap[anim.Name].AddSprite(image.Path, i)
+			if this.animMap[anim.Name].GetSprite(uint(i)) == nil {
 				log.Fatal("[SpriteLoader] ", sdl.GetError())
 			}
 			log.Printf(
