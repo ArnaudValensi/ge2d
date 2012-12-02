@@ -18,7 +18,7 @@ func NewObject(id uint) *Object {
 	}
 }
 
-func (this *Object) AddComponent(component *BaseComponent) {
+func (this *Object) AddComponent(component IComponent) {
 	this.componentList.PushBack(component)
 }
 
@@ -30,4 +30,13 @@ func (this *Object) HandleMessage(message IMessage) {
 	for e := this.componentList.Front(); e != nil; e = e.Next() {
 		e.Value.(IComponent).HandleMessage(message)
 	}
+}
+
+func (this *Object) GetComposantByTypeName(typeName string) IComponent {
+	for e := this.componentList.Front(); e != nil; e = e.Next() {
+		if e.Value.(IComponent).GetTypeName() == typeName {
+			return e.Value.(IComponent)
+		}
+	}
+	return nil
 }
