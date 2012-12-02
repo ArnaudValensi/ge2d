@@ -36,7 +36,7 @@ func (this *Sprite) LoadSpriteSet(file string, elemWidth uint, elemHeight uint) 
 }
 
 // Get sprite by the global id
-func (this *Sprite) GetSprite(gid uint) (*sdl.Surface, int, int, error) {
+func (this *Sprite) GetSprite(gid uint) (*sdl.Surface, *sdl.Rect, error) {
 	pair := this.spriteMap[this.globalIndex[gid]]
 	spriteId := gid - pair.firstGid
 	return pair.spriteSet.GetSprite(spriteId)

@@ -4,16 +4,17 @@ import (
 	"github.com/0xe2-0x9a-0x9b/Go-SDL/sdl"
 )
 
-// TODO: private attributes
 type Anim struct {
 	name		string
 	frequency	uint
 	sprite		[]*sdl.Surface
 	// nbCall		uint
+	set		*SpriteSet
 }
 
 func NewAnim(name string, frequency uint, nbSprites int) *Anim {
-	return &Anim {name, frequency, make([]*sdl.Surface, nbSprites)}
+	set := NewSpriteSet("Test.png", 101, 171)
+	return &Anim {name, frequency, make([]*sdl.Surface, nbSprites), set}
 }
 
 func (this *Anim) Free() {
@@ -32,6 +33,10 @@ func (this *Anim) GetFrequency() uint {
 
 func (this *Anim) GetSprite(n uint) *sdl.Surface {
 	return this.sprite[n]
+}
+
+func (this *Anim) GetSprite2(n uint) (*sdl.Surface, *sdl.Rect, error) {
+	return this.set.GetSprite(n % 9)
 }
 
 func (this *Anim) GetNunberSprite() uint {

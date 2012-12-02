@@ -1,7 +1,7 @@
 package ge2d
 
 import (
-	//"fmt"
+	"fmt"
 	"github.com/0xe2-0x9a-0x9b/Go-SDL/sdl"
 	"log"
 	//"math"
@@ -123,7 +123,8 @@ func (this *RenderManager) Blit(component *RenderComponent, node INode) {
 
 	log.Printf("imageCount: %d, image: %d\n", *imageCount, *imageCount / anim.GetFrequency())
 
-	image := anim.GetSprite(*imageCount / anim.GetFrequency())
+	// TODO: handle err
+	image, srcrect, _ := anim.GetSprite2(*imageCount / anim.GetFrequency())
 	nbImage := anim.GetNunberSprite()
 	*imageCount = (*imageCount + 1) % (nbImage * anim.GetFrequency())
 
@@ -133,11 +134,22 @@ func (this *RenderManager) Blit(component *RenderComponent, node INode) {
 		log.Fatal("[RenderManager] Blit(): nil surface")
 	}
 	
+	// this.screen.Blit(
+	// 	&sdl.Rect{
+	// 	int16(position.X), int16(position.Y), 
+	// 	uint16(image.W), uint16(image.H)},
+	// 	image, nil)
+
+	fmt.Printf("size: %d, %d -- pos: %d, %d\n", 
+		srcrect.W, srcrect.H, srcrect.X, srcrect.Y)
+
 	this.screen.Blit(
 		&sdl.Rect{
 		int16(position.X), int16(position.Y), 
 		uint16(image.W), uint16(image.H)},
-		image, nil)
+		image,
+		srcrect,
+	)
 
 }
 
