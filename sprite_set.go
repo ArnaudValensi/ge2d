@@ -1,3 +1,5 @@
+// TODO: error if the surface is not divisable by tilesize
+
 package ge2d
 
 import (
