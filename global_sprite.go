@@ -2,8 +2,6 @@ package ge2d
 
 import (
 	"github.com/0xe2-0x9a-0x9b/Go-SDL/sdl"
-	"log"
-	// "errors"
 )
 
 // Sprite is used to load all sprite set and access to sprites with a
@@ -36,14 +34,8 @@ func (this *Sprite) LoadSpriteSet(file string, elemWidth uint, elemHeight uint) 
 	}
 }
 
-// Get sprite by the global id
 func (this *Sprite) GetSprite(gid uint) (*sdl.Surface, *sdl.Rect, error) {
-	
-	log.Printf("this.globalIndex[gid]: %v\n", this.globalIndex)
 	pair := this.spriteMap[this.globalIndex[gid]]
-	log.Printf("pair.firstGid: %d\n", pair.firstGid)
 	spriteId := gid - pair.firstGid
-	log.Printf("spriteId: %d\n", spriteId)
-
 	return pair.spriteSet.GetSprite(spriteId)
 }

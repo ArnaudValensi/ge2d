@@ -2,7 +2,6 @@ package ge2d
 
 import (
 	"github.com/0xe2-0x9a-0x9b/Go-SDL/sdl"
-	"log"
 )
 
 type Anim struct {
@@ -42,7 +41,6 @@ func (this *Anim) GetSprite(n uint) *sdl.Surface {
 
 func (this *Anim) GetSprite2(n uint) (*sdl.Surface, *sdl.Rect, error) {
 	// return this.set.GetSprite(n % 9)
-	log.Printf("n: %d\n", n)
 	return this.gset.GetSprite(n % 17)
 }
 
