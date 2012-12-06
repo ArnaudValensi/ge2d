@@ -6,9 +6,7 @@ package ge2d
 import (
 	"github.com/0xe2-0x9a-0x9b/Go-SDL/sdl"
 	"errors"
-	"github.com/kr/pretty"
 	"log"
-	// "fmt"
 )
 
 // SpriteSet is used to load a sprite set (an image which contain many 
@@ -31,8 +29,6 @@ func NewSpriteSet(file string, elemWidth uint, elemHeight uint) *SpriteSet {
 	nbElemHeight := int(surface.H) / int(elemHeight)
 	nbElem := nbElemWidth * nbElemHeight
 	elemList := make([]Vector2d, nbElem)
-
-	pretty.Printf("=====: %# v, nbElem %d, %d\n", elemList, nbElem, elemWidth)
 
 	var x, y int = 0, 0
 	for i := 0; i < nbElem; i++ {
@@ -61,8 +57,4 @@ func (this *SpriteSet) GetSprite(id uint) (*sdl.Surface, *sdl.Rect, error) {
 // Return the number of sprites
 func (this *SpriteSet) GetNumberSprites() uint {
 	return (uint(this.surface.W) / this.elemWidth) * (uint(this.surface.H) / this.elemHeight)
-}
-
-func (this *SpriteSet) Debug() {
-	pretty.Printf("tmx: %# v\n", this.elemList)
 }

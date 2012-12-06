@@ -1,12 +1,13 @@
+//TODO: ApriteLoader: free
+//TODO: Rename SpriteLoader into RessoursesManager or something like
+
 package ge2d
 
 import (
-	// "fmt"
 	"log"
 	"os"
 	"encoding/xml"
 	"github.com/0xe2-0x9a-0x9b/Go-SDL/sdl"
-	"github.com/kr/pretty"
 	"strconv"
 )
 
@@ -74,10 +75,7 @@ func (this *SpriteLoader) loadTilesets() {
 			tileset.TileWidth,
 			tileset.TileHeight,
 		)
-		log.Println("[SpriteLoader] loadTilesets(): TileSet loaded:", tileset.Name,
-			", TileWidth:", tileset.TileWidth, 
-			"TileHeight:", tileset.TileHeight,
-			"Source:", tileset.Source)
+		log.Printf("[SpriteLoader] TileSet loaded: %s\n", tileset.Name)
 	}
 }
 
@@ -117,8 +115,6 @@ func (this *SpriteLoader) loadAnims() {
 			}
 		}
 		this.animMap[anim.Name] = newAnim
-		pretty.Printf("AAA: %# v\n", this.animMap)
-
 	}
 }
 
@@ -131,7 +127,6 @@ func (this *SpriteLoader) Load(gsprFile string) {
 	defer xmlFile.Close()
 	
 	xml.NewDecoder(xmlFile).Decode(&this.data)
-
 	if this.data.XMLName.Local != "sprite" {
 		log.Fatal(
 			"[SpriteLoader] \"", 
@@ -139,29 +134,10 @@ func (this *SpriteLoader) Load(gsprFile string) {
 			"\" file does not content <sprite></sprite>")
 	}
 
-	pretty.Printf("tmx: %# v\n", this.data)
+	// pretty.Printf("tmx: %# v\n", this.data)
 
 	this.loadTilesets()
 	this.loadAnims()
-
-	// for _, anim := range data.Anim {
-	// 	if _, exist := this.animMap[anim.Name]; exist {
-	// 		log.Fatal("[SpriteLoader] Sprite with same name already loaded:", anim.Name)
-	// 	}
-	// 	this.animMap[anim.Name] = 
-	// 		NewAnim(anim.Name, anim.Frequency, len(anim.Images))
-	// 	for i, image := range anim.Images {
-	// 		this.animMap[anim.Name].AddSprite(image.Path, i)
-	// 		// if this.animMap[anim.Name].GetSprite(uint(i)) == nil {
-	// 		// 	log.Fatal("[SpriteLoader] ", sdl.GetError())
-	// 		// }
-	// 		log.Printf(
-	// 			"[SpriteLoader] Sprite: %s, Path: %s -> Loaded\n", 
-	// 			anim.Name, image.Path)
-	// 	}
-	// }	
-	// fmt.Println(this.animMap)
-	// fmt.Println(this.animMap["walk_face"])
 }
 
 func (this *SpriteLoader) GetAnimMap() map[string]*Anim {
@@ -169,8 +145,6 @@ func (this *SpriteLoader) GetAnimMap() map[string]*Anim {
 }
 
 func (this *SpriteLoader) GetAnim(name string) *Anim {
-	log.Printf("name: %s\n", name)
-	pretty.Printf("tmx: %# v\n", this.animMap)
 	if anim, exist := this.animMap[name]; exist {
 		return anim
 	}
@@ -179,10 +153,7 @@ func (this *SpriteLoader) GetAnim(name string) *Anim {
 }
 
 func (this *SpriteLoader) GetSprite(res *RessourceImage) (*sdl.Surface, *sdl.Rect, error) {
-	log.Printf("name: %s, num: %d\n", res.spriteSetName, res.imageNum)
-	pretty.Printf("tmx: %# v\n", this.mapSprite)
 	if spriteset, exist := this.mapSprite[res.spriteSetName]; exist {
-		spriteset.Debug()
 		return spriteset.GetSprite(res.imageNum)
 	}
 	log.Fatal("[SpriteLoader] GetSprite: spriteset name does not exist")

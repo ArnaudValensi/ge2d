@@ -80,11 +80,6 @@ func (this *RenderManager) Update(sceneManager *SceneManager) {
 	this.BlitMap()
 	this.BrowseNode(sceneManager.GetRootNode())
 	this.screen.Flip()
-
-	// this.screen.FillRect(nil, 0x302019)
-	// this.screen.Blit(&sdl.Rect{i, 0, 0, 0}, this.image, nil)
-	// i++
-	// this.screen.Flip()
 }
 
 func (this *RenderManager) CreateRenderComponent(animName string) *RenderComponent {
@@ -100,7 +95,6 @@ func (this *RenderManager) BrowseNode(node INode) {
 			object.GetComposantByTypeName("render").(*RenderComponent)
 		if renderComponent != nil {
 			this.Blit(renderComponent, node)
-			// this.Blit(renderComponent.GetNextImage(), node.GetPosition())
 		}
 	}
 	for _, node := range node.GetChildMap() {
@@ -113,13 +107,10 @@ func (this *RenderManager) BlitMap() {
 }
 
 func (this *RenderManager) Blit(component *RenderComponent, node INode) {
-	// anim := this.animMap[component.GetAnimation()]
-	// imageCount := component.GetImageCount()
-	
 	anim := component.GetAnimation()
 	imageCount := component.GetImageCount()
 
-	log.Printf("imageCount: %d, image: %d\n", *imageCount, *imageCount / anim.GetFrequency())
+	// log.Printf("imageCount: %d, image: %d\n", *imageCount, *imageCount / anim.GetFrequency())
 
 	ressource := anim.GetResource(*imageCount / anim.GetFrequency())
 	image, srcrect, err := this.ressourceManager.GetSprite(ressource)
@@ -135,15 +126,6 @@ func (this *RenderManager) Blit(component *RenderComponent, node INode) {
 		log.Fatal("[RenderManager] Blit(): nil surface")
 	}
 	
-	// this.screen.Blit(
-	// 	&sdl.Rect{
-	// 	int16(position.X), int16(position.Y), 
-	// 	uint16(image.W), uint16(image.H)},
-	// 	image, nil)
-
-	// fmt.Printf("size: %d, %d -- pos: %d, %d\n", 
-	// 	srcrect.W, srcrect.H, srcrect.X, srcrect.Y)
-
 	this.screen.Blit(
 		&sdl.Rect{
 		int16(position.X), int16(position.Y), 
@@ -162,10 +144,6 @@ func (this *RenderManager) BlitSprite(sprite *Sprite) {
 	)
 
 }
-
-// func (this *RenderManager) GetSpriteBuffer() *Sprite {
-// 	return this.spriteBuffer
-// }
 
 func (this *RenderManager) GetSprite(gid uint) (*sdl.Surface, *sdl.Rect, error) {
 	return this.mapSprite.GetSprite(gid)
