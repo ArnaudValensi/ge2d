@@ -69,7 +69,7 @@ func (this *TmxTileMap) BlitMap() {
 
 				x := n % int(this.width) * int(this.tileWidth)
 				y := n / int(this.width) * int(this.tileHeight) - int(srcrect.H) + this.tmxMap.TileHeight
-				log.Printf("n: %d, x: %d, y: %d\n", n, x, y)
+				// log.Printf("n: %d, x: %d, y: %d\n", n, x, y)
 
 
 				destrect := &sdl.Rect{ int16(x), int16(y), srcrect.W, srcrect.H }

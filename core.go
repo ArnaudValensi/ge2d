@@ -48,21 +48,21 @@ func Run() {
 	renderManager := NewRenderManager()
 	sceneManager := NewSceneManager()
 
-	// // Create an object
-	// obj1 := NewObject(1)
-	// // Create a render component
-	// spr := renderManager.CreateRenderComponent("walk_face2")
-	// // Add it to the object
-	// obj1.AddComponent(spr)
+	// Create an object
+	obj1 := NewObject(1)
+	// Create a render component
+	spr := renderManager.CreateRenderComponent("walk_face2")
+	// Add it to the object
+	obj1.AddComponent(spr)
 	
-	// // Add object to the scene
-	// rootNode := sceneManager.GetRootNode()
-	// rootNode.AttachObject(obj1)
+	// Add object to the scene
+	rootNode := sceneManager.GetRootNode()
+	rootNode.AttachObject(obj1)
 
-	// // scene.AddObject(obj1)
+	// scene.AddObject(obj1)
 
-	// msg := NewSetPositionMessage(1, Vector2d {23, 69})
-	// sceneManager.HandleMessage(msg)
+	msg := NewSetPositionMessage(1, Vector2d {23, 69})
+	sceneManager.HandleMessage(msg)
 	
 	/////////////////////////////////////////////
 

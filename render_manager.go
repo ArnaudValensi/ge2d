@@ -1,9 +1,9 @@
 package ge2d
 
 import (
-	"fmt"
 	"github.com/0xe2-0x9a-0x9b/Go-SDL/sdl"
 	"log"
+	// "fmt"
 	//"math"
 	// "os"
 	//"strings"
@@ -75,8 +75,8 @@ func (this *RenderManager) Update(sceneManager *SceneManager) {
 		this.screen.FillRect(nil, this.backgroundColor)
 	}
 	// this.screen.FillRect(nil, 0x302019)
-	// this.BrowseNode(sceneManager.GetRootNode())
 	this.BlitMap()
+	this.BrowseNode(sceneManager.GetRootNode())
 	this.screen.Flip()
 
 	// this.screen.FillRect(nil, 0x302019)
@@ -116,7 +116,7 @@ func (this *RenderManager) Blit(component *RenderComponent, node INode) {
 	anim := this.animMap[component.GetAnimation()]
 	imageCount := component.GetImageCount()
 
-	log.Printf("imageCount: %d, image: %d\n", *imageCount, *imageCount / anim.GetFrequency())
+	// log.Printf("imageCount: %d, image: %d\n", *imageCount, *imageCount / anim.GetFrequency())
 
 	// TODO: handle err
 	image, srcrect, err := anim.GetSprite2(*imageCount / anim.GetFrequency())
@@ -138,8 +138,8 @@ func (this *RenderManager) Blit(component *RenderComponent, node INode) {
 	// 	uint16(image.W), uint16(image.H)},
 	// 	image, nil)
 
-	fmt.Printf("size: %d, %d -- pos: %d, %d\n", 
-		srcrect.W, srcrect.H, srcrect.X, srcrect.Y)
+	// fmt.Printf("size: %d, %d -- pos: %d, %d\n", 
+	// 	srcrect.W, srcrect.H, srcrect.X, srcrect.Y)
 
 	this.screen.Blit(
 		&sdl.Rect{
