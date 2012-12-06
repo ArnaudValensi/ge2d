@@ -11,12 +11,13 @@ import (
 )
 
 type RenderManager struct {
-	screen		*sdl.Surface
-	image		*sdl.Surface
-	animMap		map[string]*Anim
-	tmx		*TmxTileMap
-	mapSprite	*SpriteSetCollection
-	// spriteSlice	[]*sdl.Surface
+	screen			*sdl.Surface
+	image			*sdl.Surface
+	animMap			map[string]*Anim
+	tmx			*TmxTileMap
+	mapSprite		*SpriteSetCollection
+	// spriteSlice		[]*sdl.Surface
+	backgroundColor		uint32
 }
 
 func NewRenderManager() *RenderManager {
@@ -26,7 +27,8 @@ func NewRenderManager() *RenderManager {
 		nil, 
 		make(map[string]*Anim), 
 		nil, 
-		mapSprite, 
+		mapSprite,
+		0x0,
 	}
 	tmx := NewTmxTileMap(this)
 	this.tmx = tmx
@@ -35,50 +37,26 @@ func NewRenderManager() *RenderManager {
 }
 
 func (this *RenderManager) Init() {
-	// this.tmx.Load("./test.tmx")
 	this.tmx.Load("./test_cute.tmx")
-	// os.Exit(0)
-
 	if sdl.Init(sdl.INIT_EVERYTHING) != 0 {
 		log.Fatal(sdl.GetError())
 	}
-
 	this.screen = sdl.SetVideoMode(707, 600, 32, sdl.RESIZABLE)
-
 	if this.screen == nil {
 		log.Fatal(sdl.GetError())
 	}
-
 	var video_info = sdl.GetVideoInfo()
-
 	println("HW_available = ", video_info.HW_available)
 	println("WM_available = ", video_info.WM_available)
 	println("Video_mem = ", video_info.Video_mem, "kb")
-
 	sdl.EnableUNICODE(1)
-
 	sdl.WM_SetCaption("Go-SDL SDL Test", "")
-
-	// image := sdl.Load(resourcePath + "/test.png")
-
-	// if image == nil {
-	// 	log.Fatal(sdl.GetError())
-	// }
-
-	// sdl.WM_SetIcon(image, nil)
-
-	// running := true
-
 	if sdl.GetKeyName(270) != "[+]" {
 		log.Fatal("GetKeyName broken")
 	}
-
 	spriteLoader := NewSpriteLoader()
 	spriteLoader.Load("test.gspr")
 	this.animMap = spriteLoader.GetAnimMap()
-
-	// DEBUG
-	// this.DebugRessources()
 }
 
 func (this *RenderManager) LoadMapSpriteSet(file string, elemWidth uint, elemHeight uint) {
@@ -93,7 +71,10 @@ func (this *RenderManager) Quit() {
 
 var i int16 = 0
 func (this *RenderManager) Update(sceneManager *SceneManager) {
-	this.screen.FillRect(nil, 0x302019)
+	if this.backgroundColor != 0 {
+		this.screen.FillRect(nil, this.backgroundColor)
+	}
+	// this.screen.FillRect(nil, 0x302019)
 	// this.BrowseNode(sceneManager.GetRootNode())
 	this.BlitMap()
 	this.screen.Flip()
@@ -103,16 +84,6 @@ func (this *RenderManager) Update(sceneManager *SceneManager) {
 	// i++
 	// this.screen.Flip()
 }
-
-// func (this *RenderManager) DebugRessources() {
-// 	this.image = sdl.Load(resourcePath + "/test.png")
-
-// 	if this.image == nil {
-// 		log.Fatal(sdl.GetError())
-// 	}
-
-// 	// sdl.WM_SetIcon(image, nil)
-// }
 
 func (this *RenderManager) CreateRenderComponent(sprite string) *RenderComponent {
 	if _, exist := this.animMap[sprite]; !exist {
@@ -195,4 +166,13 @@ func (this *RenderManager) BlitSprite(sprite *Sprite) {
 
 func (this *RenderManager) GetSprite(gid uint) (*sdl.Surface, *sdl.Rect, error) {
 	return this.mapSprite.GetSprite(gid)
+}
+
+//TODO: maybe to move in Scene
+func (this *RenderManager) GetBackgroundColor() uint32 {
+	return this.backgroundColor
+}
+
+func (this *RenderManager) SetBackgroundColor(backgroundColor uint32) {
+	this.backgroundColor = backgroundColor
 }

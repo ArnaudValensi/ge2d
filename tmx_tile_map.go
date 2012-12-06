@@ -22,7 +22,6 @@ func NewTmxTileMap(renderManager *RenderManager) *TmxTileMap {
 	return &TmxTileMap { renderManager, Sprite {nil, nil, nil}, nil, 0, 0, 0, 0 }
 }
 
-// TODO: voir la place du defer
 func (this *TmxTileMap) Load(file string) {
 	chk := func(err error) {
 		if err != nil {
@@ -31,8 +30,8 @@ func (this *TmxTileMap) Load(file string) {
 	}
 
 	fd, err := os.Open(file)
-	chk(err)
 	defer fd.Close()
+	chk(err)
 	
 	this.tmxMap, err = tmx.Read(fd)
 	chk(err)
