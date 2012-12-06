@@ -51,7 +51,8 @@ func Run() {
 	// Create an object
 	obj1 := NewObject(1)
 	// Create a render component
-	spr := renderManager.CreateRenderComponent("walk_face2")
+	// spr := renderManager.CreateRenderComponent("walk_face2")
+	spr := renderManager.CreateRenderComponent("walk_face")
 	// Add it to the object
 	obj1.AddComponent(spr)
 	

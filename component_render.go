@@ -7,11 +7,12 @@ import (
 type RenderComponent struct {
 	BaseComponent
 	renderManager	*RenderManager
-	animation	string
+	// animation	string
+	animation	*Anim
 	imageCount	uint
 }
 
-func NewRenderComponent(renderManager *RenderManager, animation string) *RenderComponent {
+func NewRenderComponent(renderManager *RenderManager, animation *Anim) *RenderComponent {
 	return &RenderComponent {
 		BaseComponent {"render"}, 
 		renderManager, 
@@ -19,7 +20,7 @@ func NewRenderComponent(renderManager *RenderManager, animation string) *RenderC
 		0}
 }
 
-func (this *RenderComponent) GetAnimation() string {
+func (this *RenderComponent) GetAnimation() *Anim {
 	return this.animation
 }
 

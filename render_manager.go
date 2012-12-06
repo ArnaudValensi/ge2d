@@ -13,11 +13,12 @@ import (
 type RenderManager struct {
 	screen			*sdl.Surface
 	image			*sdl.Surface
-	animMap			map[string]*Anim
+	// animMap			map[string]*Anim
 	tmx			*TmxTileMap
 	mapSprite		*SpriteSetCollection
 	// spriteSlice		[]*sdl.Surface
 	backgroundColor		uint32
+	ressourceManager	*SpriteLoader
 }
 
 func NewRenderManager() *RenderManager {
@@ -25,10 +26,11 @@ func NewRenderManager() *RenderManager {
 	this := &RenderManager {
 		nil, 
 		nil, 
-		make(map[string]*Anim), 
+		// make(map[string]*Anim), 
 		nil, 
 		mapSprite,
 		0x0,
+		NewSpriteLoader(),
 	}
 	tmx := NewTmxTileMap(this)
 	this.tmx = tmx
@@ -54,9 +56,9 @@ func (this *RenderManager) Init() {
 	if sdl.GetKeyName(270) != "[+]" {
 		log.Fatal("GetKeyName broken")
 	}
-	spriteLoader := NewSpriteLoader()
-	spriteLoader.Load("test.gspr")
-	this.animMap = spriteLoader.GetAnimMap()
+	this.ressourceManager = NewSpriteLoader()
+	this.ressourceManager.Load("test_tileset.gspr")
+	// this.animMap = ressourceManager.GetAnimMap()
 }
 
 func (this *RenderManager) LoadMapSpriteSet(file string, elemWidth uint, elemHeight uint) {
@@ -71,9 +73,9 @@ func (this *RenderManager) Quit() {
 
 var i int16 = 0
 func (this *RenderManager) Update(sceneManager *SceneManager) {
-	if this.backgroundColor != 0 {
-		this.screen.FillRect(nil, this.backgroundColor)
-	}
+	// if this.backgroundColor != 0 {
+	this.screen.FillRect(nil, this.backgroundColor)
+	// }
 	// this.screen.FillRect(nil, 0x302019)
 	this.BlitMap()
 	this.BrowseNode(sceneManager.GetRootNode())
@@ -85,11 +87,9 @@ func (this *RenderManager) Update(sceneManager *SceneManager) {
 	// this.screen.Flip()
 }
 
-func (this *RenderManager) CreateRenderComponent(sprite string) *RenderComponent {
-	if _, exist := this.animMap[sprite]; !exist {
-		log.Fatal("[RenderManager] CreateRenderComponent(): Unknown sprite")
-	}
-	renderComponent := NewRenderComponent(this, sprite)
+func (this *RenderManager) CreateRenderComponent(animName string) *RenderComponent {
+	anim := this.ressourceManager.GetAnim(animName)
+	renderComponent := NewRenderComponent(this, anim)
 	return renderComponent
 }
 
@@ -113,15 +113,18 @@ func (this *RenderManager) BlitMap() {
 }
 
 func (this *RenderManager) Blit(component *RenderComponent, node INode) {
-	anim := this.animMap[component.GetAnimation()]
+	// anim := this.animMap[component.GetAnimation()]
+	// imageCount := component.GetImageCount()
+	
+	anim := component.GetAnimation()
 	imageCount := component.GetImageCount()
 
-	// log.Printf("imageCount: %d, image: %d\n", *imageCount, *imageCount / anim.GetFrequency())
+	log.Printf("imageCount: %d, image: %d\n", *imageCount, *imageCount / anim.GetFrequency())
 
-	// TODO: handle err
-	image, srcrect, err := anim.GetSprite2(*imageCount / anim.GetFrequency())
+	ressource := anim.GetResource(*imageCount / anim.GetFrequency())
+	image, srcrect, err := this.ressourceManager.GetSprite(ressource)
 	if err != nil {
-		log.Fatal("[RenderManager] Blit(): GetSprite2 error")
+		log.Fatal("[RenderManager] Blit(): ", err)
 	}
 	nbImage := anim.GetNumberSprite()
 	*imageCount = (*imageCount + 1) % (nbImage * anim.GetFrequency())

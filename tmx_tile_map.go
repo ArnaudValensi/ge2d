@@ -4,7 +4,7 @@ import (
 	"github.com/kyleconroy/go-tmx/tmx"
 	"os"
 	"log"
-	"github.com/kr/pretty"
+	// "github.com/kr/pretty"
 	"github.com/0xe2-0x9a-0x9b/Go-SDL/sdl"
 )
 
@@ -36,7 +36,7 @@ func (this *TmxTileMap) Load(file string) {
 	this.tmxMap, err = tmx.Read(fd)
 	chk(err)
 	
-	pretty.Printf("tmx: %# v\n", this.tmxMap)
+	// pretty.Printf("tmx: %# v\n", this.tmxMap)
 	// log.Printf("================\ntmx: %+v\n", m.Version)
 
 	for _, tileset := range this.tmxMap.Tilesets {
