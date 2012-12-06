@@ -40,9 +40,9 @@ func NewSpriteSet(file string, elemWidth uint, elemHeight uint) *SpriteSet {
 
 // Get a sprite (an elem). It begin by 0
 func (this *SpriteSet) GetSprite(id uint) (*sdl.Surface, *sdl.Rect, error) {
-	fmt.Printf("id: %d", id)
+	fmt.Printf("id: %d ", id)
 	if id >= uint(len(this.elemList)) {
-		err := errors.New("id for request sprite is out of bound")
+		err := errors.New("id for requested sprite is out of bound")
 		return nil, nil, err
 	}
 	rect := &sdl.Rect {

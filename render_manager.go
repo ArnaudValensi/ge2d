@@ -5,7 +5,7 @@ import (
 	"github.com/0xe2-0x9a-0x9b/Go-SDL/sdl"
 	"log"
 	//"math"
-	//"os"
+	// "os"
 	//"strings"
 	//"time"
 )
@@ -14,21 +14,36 @@ type RenderManager struct {
 	screen		*sdl.Surface
 	image		*sdl.Surface
 	animMap		map[string]*Anim
+	tmx		*TmxTileMap
+	mapSprite	*SpriteSetCollection
 	// spriteSlice	[]*sdl.Surface
 }
 
 func NewRenderManager() *RenderManager {
-	this := &RenderManager {nil, nil, make(map[string]*Anim)}
+	mapSprite := NewSpriteSetCollection()
+	this := &RenderManager {
+		nil, 
+		nil, 
+		make(map[string]*Anim), 
+		nil, 
+		mapSprite, 
+	}
+	tmx := NewTmxTileMap(this)
+	this.tmx = tmx
 	this.Init()
 	return this
 }
 
 func (this *RenderManager) Init() {
+	// this.tmx.Load("./test.tmx")
+	this.tmx.Load("./test_cute.tmx")
+	// os.Exit(0)
+
 	if sdl.Init(sdl.INIT_EVERYTHING) != 0 {
 		log.Fatal(sdl.GetError())
 	}
 
-	this.screen = sdl.SetVideoMode(640, 480, 32, sdl.RESIZABLE)
+	this.screen = sdl.SetVideoMode(707, 600, 32, sdl.RESIZABLE)
 
 	if this.screen == nil {
 		log.Fatal(sdl.GetError())
@@ -66,6 +81,10 @@ func (this *RenderManager) Init() {
 	// this.DebugRessources()
 }
 
+func (this *RenderManager) LoadMapSpriteSet(file string, elemWidth uint, elemHeight uint) {
+	this.mapSprite.LoadSpriteSet(file, elemWidth, elemHeight)
+}
+
 // TODO: Sprite are not free (sdl)
 func (this *RenderManager) Quit() {
 	// image.Free()
@@ -75,7 +94,8 @@ func (this *RenderManager) Quit() {
 var i int16 = 0
 func (this *RenderManager) Update(sceneManager *SceneManager) {
 	this.screen.FillRect(nil, 0x302019)
-	this.BrowseNode(sceneManager.GetRootNode())
+	// this.BrowseNode(sceneManager.GetRootNode())
+	this.BlitMap()
 	this.screen.Flip()
 
 	// this.screen.FillRect(nil, 0x302019)
@@ -117,6 +137,10 @@ func (this *RenderManager) BrowseNode(node INode) {
 	}
 }
 
+func (this *RenderManager) BlitMap() {
+	this.tmx.BlitMap()
+}
+
 func (this *RenderManager) Blit(component *RenderComponent, node INode) {
 	anim := this.animMap[component.GetAnimation()]
 	imageCount := component.GetImageCount()
@@ -156,6 +180,19 @@ func (this *RenderManager) Blit(component *RenderComponent, node INode) {
 
 }
 
-func (this *RenderManager) LoadSprite() {
-	
+func (this *RenderManager) BlitSprite(sprite *Sprite) {
+	this.screen.Blit(
+		sprite.GetDestRect(),
+		sprite.GetSurface(),
+		sprite.GetSrcRect(),
+	)
+
+}
+
+// func (this *RenderManager) GetSpriteBuffer() *Sprite {
+// 	return this.spriteBuffer
+// }
+
+func (this *RenderManager) GetSprite(gid uint) (*sdl.Surface, *sdl.Rect, error) {
+	return this.mapSprite.GetSprite(gid)
 }

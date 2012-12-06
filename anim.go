@@ -10,12 +10,12 @@ type Anim struct {
 	sprite		[]*sdl.Surface
 	// nbCall		uint
 	set		*SpriteSet
-	gset		*Sprite
+	gset		*SpriteSetCollection
 }
 
 func NewAnim(name string, frequency uint, nbSprites int) *Anim {
 	set := NewSpriteSet("Test.png", 101, 171)
-	gset := NewSprite()
+	gset := NewSpriteSetCollection()
 	gset.LoadSpriteSet("Test.png", 101, 171)
 	gset.LoadSpriteSet("set_windrider.png", 80, 78)
 	return &Anim {name, frequency, make([]*sdl.Surface, nbSprites), set, gset}
