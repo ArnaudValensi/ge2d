@@ -124,8 +124,11 @@ func (this *RenderManager) Blit(component *RenderComponent, node INode) {
 	log.Printf("imageCount: %d, image: %d\n", *imageCount, *imageCount / anim.GetFrequency())
 
 	// TODO: handle err
-	image, srcrect, _ := anim.GetSprite2(*imageCount / anim.GetFrequency())
-	nbImage := anim.GetNunberSprite()
+	image, srcrect, err := anim.GetSprite2(*imageCount / anim.GetFrequency())
+	if err != nil {
+		log.Fatal("[RenderManager] Blit(): GetSprite2 error")
+	}
+	nbImage := anim.GetNumberSprite()
 	*imageCount = (*imageCount + 1) % (nbImage * anim.GetFrequency())
 
 	position := node.GetPosition()

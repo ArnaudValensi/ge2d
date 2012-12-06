@@ -2,6 +2,7 @@ package ge2d
 
 import (
 	"github.com/0xe2-0x9a-0x9b/Go-SDL/sdl"
+	"log"
 )
 
 type Anim struct {
@@ -10,11 +11,15 @@ type Anim struct {
 	sprite		[]*sdl.Surface
 	// nbCall		uint
 	set		*SpriteSet
+	gset		*Sprite
 }
 
 func NewAnim(name string, frequency uint, nbSprites int) *Anim {
 	set := NewSpriteSet("Test.png", 101, 171)
-	return &Anim {name, frequency, make([]*sdl.Surface, nbSprites), set}
+	gset := NewSprite()
+	gset.LoadSpriteSet("Test.png", 101, 171)
+	gset.LoadSpriteSet("set_windrider.png", 80, 78)
+	return &Anim {name, frequency, make([]*sdl.Surface, nbSprites), set, gset}
 }
 
 func (this *Anim) Free() {
@@ -36,10 +41,12 @@ func (this *Anim) GetSprite(n uint) *sdl.Surface {
 }
 
 func (this *Anim) GetSprite2(n uint) (*sdl.Surface, *sdl.Rect, error) {
-	return this.set.GetSprite(n % 9)
+	// return this.set.GetSprite(n % 9)
+	log.Printf("n: %d\n", n)
+	return this.gset.GetSprite(n % 17)
 }
 
-func (this *Anim) GetNunberSprite() uint {
+func (this *Anim) GetNumberSprite() uint {
 	return uint(len(this.sprite))
 }
 
