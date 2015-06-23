@@ -2,7 +2,7 @@ package ge2d
 
 import (
 	"fmt"
-	"github.com/0xe2-0x9a-0x9b/Go-SDL/sdl"
+	"github.com/scottferg/Go-SDL/sdl"
 	"log"
 	//"math"
 	// "os"
@@ -77,14 +77,6 @@ func Run() {
 	for running {
 		select {
 		case <-ticker.C:
-			// screen.FillRect(nil, 0x302019)
-			// screen.Blit(&sdl.Rect{i, 0, 0, 0}, image, nil)
-			// i++
-			// // var p Point
-			// // sdl.GetMouseState(&p.x, &p.y)
-			// // worm_in <- p
-
-			// screen.Flip()
 			renderManager.Update(sceneManager)
 		case _event := <-sdl.Events:
 			switch e := _event.(type) {
